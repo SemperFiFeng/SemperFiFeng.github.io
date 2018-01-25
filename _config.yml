@@ -1,0 +1,47 @@
+# Basic
+title: ☁️ོSemper fi
+subtitle: 人一切的痛苦，本质上都是对自己无能的愤怒。
+welcome_message: <a href="http://kongyixueyuan.com/" target="_blank">我们的组织。</a>
+description: 嗨，我是封硕 (@Dejavu_Memory)，一名来自中国的区块链研习者。现居中国，在孔壹学院修行，探求区块链新世界的可能性。
+creator: <a href="http://onev.cat">@onevcat</a>
+
+url: "http://fengshuo.github.io"
+
+permalink: /:year/:month/:title/
+
+# Format
+highlighter: rouge
+
+# supported colors: blue, green, purple, red, orange or slate. If you need clear, leave it empty.
+cover_color: blue
+
+blog_button:
+    title: 博客
+    description: 访问博客
+
+nav:
+    - {title: 简历, description: 我的简历, url: 'https:baidu.com'}
+    - {title: 关于, description: 了解更多关于我, url: 'http://baidu.com/'}
+    - {title: 订阅, description: 邮件订阅本站, url: '//baidu.com'}
+
+# Pagination
+gems: [jekyll-paginate]
+paginate: 10
+paginate_path: "page/:num/"
+
+# Comment
+comment:
+    disqus: Semper fi
+    # duoshuo:
+# Social
+social:
+    weibo: Semper fi
+    github: Semper fi
+    twitter: Semper fi
+    gplus: 107108267983477358170
+    mail: fengshuo.dr@gmail.com
+
+# Google Analytics
+ga:
+    id:
+    host: fengshuo.github.io
