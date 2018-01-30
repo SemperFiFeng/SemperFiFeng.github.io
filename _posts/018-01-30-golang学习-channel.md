@@ -1,4 +1,3 @@
-#golang 中的多线程使用#
 #区块链/区块链博客
 
 ### `golang`中管道的使用
@@ -99,7 +98,7 @@ localhost:0130 Fong$
 	}
 	// num, ok := <-c   测试管道是否被关闭，如果ok返回的false则关闭
 ```
-
+输出的结果：
 ```运行终端输出
 localhost:0130 Fong$ go run 011-demo.go 
 0

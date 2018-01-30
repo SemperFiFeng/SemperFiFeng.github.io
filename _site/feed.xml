@@ -5,14 +5,26 @@
     <description>嗨，我是封硕 (@Dejavu_Memory)，一名来自中国的区块链研习者。现居中国，在孔壹学院修行，探求区块链新世界的可能性。</description>
     <link>http://SemperFiFeng.github.io/</link>
     <atom:link href="http://SemperFiFeng.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 30 Jan 2018 23:29:00 +0800</pubDate>
-    <lastBuildDate>Tue, 30 Jan 2018 23:29:00 +0800</lastBuildDate>
+    <pubDate>Tue, 30 Jan 2018 23:38:29 +0800</pubDate>
+    <lastBuildDate>Tue, 30 Jan 2018 23:38:29 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
-        <title>Golang Channel</title>
-        <description>&lt;p&gt;#golang 中的多线程使用#
-#区块链/区块链博客&lt;/p&gt;
+        <title>概念篇之初识</title>
+        <description>&lt;p&gt;最早开始知道比特币和区块链是在13年。应该是大学的英语老师在课上提及的。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 28 Apr 2016 22:32:54 +0800</pubDate>
+        <link>http://SemperFiFeng.github.io/2016/04/concept-blockchain-traceback/</link>
+        <guid isPermaLink="true">http://SemperFiFeng.github.io/2016/04/concept-blockchain-traceback/</guid>
+        
+        <category>概念意识流</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Golang学习 Channel</title>
+        <description>&lt;p&gt;#区块链/区块链博客&lt;/p&gt;
 
 &lt;h3 id=&quot;golang中管道的使用&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;golang&lt;/code&gt;中管道的使用&lt;/h3&gt;
 
@@ -116,10 +128,8 @@ localhost:0130 Fong$
   &lt;/span&gt;&lt;span class=&quot;c&quot;&gt;// num, ok := &amp;lt;-c   测试管道是否被关闭，如果ok返回的false则关闭&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-运行终端输出&quot;&gt;localhost:0130 Fong$ go run 011-demo.go 
+    &lt;p&gt;输出的结果：&lt;/p&gt;
+    &lt;pre&gt;&lt;code class=&quot;language-运行终端输出&quot;&gt;localhost:0130 Fong$ go run 011-demo.go 
 0
 1
 2
@@ -132,6 +142,8 @@ localhost:0130 Fong$
 9
 localhost:0130 Fong$ 
 &lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;range&lt;/code&gt;遍历中，&lt;code class=&quot;highlighter-rouge&quot;&gt;n&lt;/code&gt;能够不断的读取&lt;code class=&quot;highlighter-rouge&quot;&gt;c&lt;/code&gt;里面的数据，直到&lt;code class=&quot;highlighter-rouge&quot;&gt;for&lt;/code&gt;执行完毕，通过下一步的&lt;code class=&quot;highlighter-rouge&quot;&gt;close(c)&lt;/code&gt;关闭管道。这个过程可以看到数据实际上是从&lt;code class=&quot;highlighter-rouge&quot;&gt;go&lt;/code&gt;开启的子线程中到达了主线程的&lt;code class=&quot;highlighter-rouge&quot;&gt;range&lt;/code&gt;处，这个便是主线程和子线程间数据的传递过程。&lt;/p&gt;
 
@@ -195,22 +207,9 @@ localhost:0130 Fong$
   &lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Tue, 30 Jan 2018 00:00:00 +0800</pubDate>
-        <link>http://SemperFiFeng.github.io/2018/01/golang-channel/</link>
-        <guid isPermaLink="true">http://SemperFiFeng.github.io/2018/01/golang-channel/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>概念篇之初识</title>
-        <description>&lt;p&gt;最早开始知道比特币和区块链是在13年。应该是大学的英语老师在课上提及的。&lt;/p&gt;
-</description>
-        <pubDate>Thu, 28 Apr 2016 22:32:54 +0800</pubDate>
-        <link>http://SemperFiFeng.github.io/2016/04/concept-blockchain-traceback/</link>
-        <guid isPermaLink="true">http://SemperFiFeng.github.io/2016/04/concept-blockchain-traceback/</guid>
-        
-        <category>概念意识流</category>
+        <pubDate>Tue, 30 Jan 0018 00:00:00 +0800</pubDate>
+        <link>http://SemperFiFeng.github.io/0018/01/golang%E5%AD%A6%E4%B9%A0-channel/</link>
+        <guid isPermaLink="true">http://SemperFiFeng.github.io/0018/01/golang%E5%AD%A6%E4%B9%A0-channel/</guid>
         
         
       </item>

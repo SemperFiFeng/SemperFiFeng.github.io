@@ -1,5 +1,4 @@
-<p>#golang 中的多线程使用#
-#区块链/区块链博客</p>
+<p>#区块链/区块链博客</p>
 
 <h3 id="golang中管道的使用"><code class="highlighter-rouge">golang</code>中管道的使用</h3>
 
@@ -103,10 +102,8 @@ localhost:0130 Fong$
   </span><span class="c">// num, ok := &lt;-c   测试管道是否被关闭，如果ok返回的false则关闭</span><span class="x">
 </span></code></pre>
     </div>
-  </li>
-</ul>
-
-<pre><code class="language-运行终端输出">localhost:0130 Fong$ go run 011-demo.go 
+    <p>输出的结果：</p>
+    <pre><code class="language-运行终端输出">localhost:0130 Fong$ go run 011-demo.go 
 0
 1
 2
@@ -119,6 +116,8 @@ localhost:0130 Fong$
 9
 localhost:0130 Fong$ 
 </code></pre>
+  </li>
+</ul>
 
 <p>在<code class="highlighter-rouge">range</code>遍历中，<code class="highlighter-rouge">n</code>能够不断的读取<code class="highlighter-rouge">c</code>里面的数据，直到<code class="highlighter-rouge">for</code>执行完毕，通过下一步的<code class="highlighter-rouge">close(c)</code>关闭管道。这个过程可以看到数据实际上是从<code class="highlighter-rouge">go</code>开启的子线程中到达了主线程的<code class="highlighter-rouge">range</code>处，这个便是主线程和子线程间数据的传递过程。</p>
 
