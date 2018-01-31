@@ -1,13 +1,18 @@
-<p>#区块链/区块链博客</p>
 
-<h3 id="golang中管道的使用"><code class="highlighter-rouge">golang</code>中管道的使用</h3>
+<hr />
+<p>layout: post
+title: “<code class="highlighter-rouge">golang</code>中管道的使用”
+date: 2018-01-30 23:32:54.000000000 +09:00
+tags: 技术篇</p>
+<hr />
+<p>#区块链/区块链博客</p>
 
 <ul>
   <li>管道是什么？
 管道(<code class="highlighter-rouge">channel</code>)是Go语言在语言级别上提供的<strong>线程间</strong>的<strong>通讯方式</strong>，我们可以使用channel在多个线程之间传递消息。<code class="highlighter-rouge">channel</code>是<strong>进程内</strong>的通讯方式，是不支持跨进程通信的，如果需要进程间通讯的话，可以使用<code class="highlighter-rouge">Socket</code>等网络方式。</li>
   <li>管道的创建方式
     <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="m">5</span><span class="p">)</span><span class="x"> </span><span class="c">//缓冲管道 可以放入多个数据  </span><span class="x">
-</span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> 	  </span><span class="c">//非缓冲管道 放入一个数组未读取 再放入阻塞</span><span class="x">
+</span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> 	  </span><span class="c">//非缓冲管道 放入一个数未读取 再放入阻塞</span><span class="x">
 </span></code></pre>
     </div>
     <p>其中<code class="highlighter-rouge">make</code>为生成语句，<code class="highlighter-rouge">chan</code>为管道类型关键字（<code class="highlighter-rouge">channel</code>的前四个字母），<code class="highlighter-rouge">chan</code>后的<code class="highlighter-rouge">int</code>是在制定管道中存放数据的类型。
@@ -25,8 +30,8 @@
 </span></code></pre>
     </div>
   </li>
-  <li>输出管道中写入的数据
-    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;-</span><span class="n">c</span><span class="x">  		</span><span class="c">//输出</span><span class="x">
+  <li>取出管道中写入的数据
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;-</span><span class="n">c</span><span class="x">  		</span><span class="c">//取数据</span><span class="x">
 </span><span class="n">a</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="o">&lt;-</span><span class="n">c</span><span class="x"> </span><span class="c">//将管道里面取出来的值赋给a</span><span class="x">
 </span></code></pre>
     </div>
