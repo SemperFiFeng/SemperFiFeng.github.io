@@ -1,9 +1,9 @@
-- - - -
+---
 layout: post
 title: “Golang 中管道的使用”
 date: 2018-01-30 23:32:54.000000000 +09:00
 tags: 技术篇
-- - - -
+---
 #区块链/区块链博客
 
 * 管道是什么？
@@ -55,7 +55,7 @@ a := <-c //将管道里面取出来的值赋给a
 ```
 两个线程会交替完成读写的操作，此时实际上是两个子线程间的数据通信。
 ```终端执行结果
-localhost:0130 Fong$ go run 009_demo.go 
+localhost:0130 Fong$ go run 009_demo.go
 0
 读取数据
 写入数据
@@ -86,7 +86,7 @@ localhost:0130 Fong$ go run 009_demo.go
 写入数据
 9
 读取数据
-localhost:0130 Fong$ 
+localhost:0130 Fong$
 ```
 * `close`与`range`结合实现类似队列的功能，例如 实现在主线程结束之前完成其它子线程的功能。如下代码
 ```golang
@@ -104,7 +104,7 @@ localhost:0130 Fong$
 ```
 输出的结果：
 ```运行终端输出
-localhost:0130 Fong$ go run 011-demo.go 
+localhost:0130 Fong$ go run 011-demo.go
 0
 1
 2
@@ -115,7 +115,7 @@ localhost:0130 Fong$ go run 011-demo.go
 7
 8
 9
-localhost:0130 Fong$ 
+localhost:0130 Fong$
 ```
 
 在`range`遍历中，`n`能够不断的读取`c`里面的数据，直到`for`执行完毕，通过下一步的`close(c)`关闭管道。这个过程可以看到数据实际上是从`go`开启的子线程中到达了主线程的`range`处，这个便是主线程和子线程间数据的传递过程。
