@@ -5,22 +5,9 @@
     <description>嗨，我是封硕 (@Dejavu_Memory)，一名来自中国的区块链研习者。现居中国，在孔壹学院修行，探求区块链新世界的可能性。</description>
     <link>http://SemperFiFeng.github.io/</link>
     <atom:link href="http://SemperFiFeng.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 30 Jan 2018 23:38:29 +0800</pubDate>
-    <lastBuildDate>Tue, 30 Jan 2018 23:38:29 +0800</lastBuildDate>
+    <pubDate>Tue, 30 Jan 2018 23:42:51 +0800</pubDate>
+    <lastBuildDate>Tue, 30 Jan 2018 23:42:51 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
-    
-      <item>
-        <title>概念篇之初识</title>
-        <description>&lt;p&gt;最早开始知道比特币和区块链是在13年。应该是大学的英语老师在课上提及的。&lt;/p&gt;
-</description>
-        <pubDate>Thu, 28 Apr 2016 22:32:54 +0800</pubDate>
-        <link>http://SemperFiFeng.github.io/2016/04/concept-blockchain-traceback/</link>
-        <guid isPermaLink="true">http://SemperFiFeng.github.io/2016/04/concept-blockchain-traceback/</guid>
-        
-        <category>概念意识流</category>
-        
-        
-      </item>
     
       <item>
         <title>Golang学习 Channel</title>
