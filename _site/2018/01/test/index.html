@@ -1,0 +1,350 @@
+<hr />
+<p>layout: post
+title: “关于 Swift Error 的分类”
+date: 2017-10-17 12:15:00.000000000 +09:00
+tags: 能工巧匠集</p>
+<hr />
+
+<p>在去年我应 IBM 编辑的邀请写过一篇关于 <a href="https://onevcat.com/2016/03/swift-throws/">Swift 2 中 throws 的文章</a>。现在回头看，Swift 2 其实是 Swift 语言发展的一个挺重要的节点：如果说 Swift 1 是一个更偏向于验证阶段的产品的话，Swift 2 中加入的特性为这门语言的基石进行了补足。在那篇文章里我们主要深入探索了新的 throw 关键字背后的事情，而同一时期其实 Swift 官方有过一次关于错误处理的讨论。随着 Swift 3 的开源，这些原始文档也被一同公开，展示了 Swift 设计的过程和轨迹。如果你对这篇 Swift 2 中的错误处理的宣言感兴趣的话，可以在 GitHub 上 Swift 项目文档中<a href="https://github.com/apple/swift/blob/master/docs/ErrorHandling.rst">找到原文</a>。</p>
+
+<p>最近参加了日本这边的一个社区办的 iOS 会议，其中 <a href="https://twitter.com/koher">koher</a> 给出了一个关于<a href="https://iosdc.jp/2017/node/1305">错误处理的 session</a>，里面也提到了这篇文档，正确理解和思考 Swift 错误机制的类型非常有意思，它也可以指导我们在不同场景下对应使用正确的处理机制。</p>
+
+<h2 id="swift-错误类型的种类">Swift 错误类型的种类</h2>
+
+<h3 id="simple-domain-error">Simple domain error</h3>
+<p>简单的，显而易见的错误。这类错误的最大特点是我们不需要知道原因，只需要知道错误发生，并且想要进行处理。用来表示这种错误发生的方法一般就是返回一个 <code class="highlighter-rouge">nil</code> 值。在 Swift 中，这类错误最常见的情况就是将某个字符串转换为整数，或者在字典尝试用某个不存在的 key 获取元素：</p>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="c1">// Simple Domain Error 的例子</span>
+
+<span class="k">let</span> <span class="nv">num</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="s">"hello world"</span><span class="p">)</span> <span class="c1">// nil</span>
+
+<span class="k">let</span> <span class="nv">element</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s">"key_not_exist"</span><span class="p">]</span> <span class="c1">// nil</span>
+</code></pre>
+</div>
+
+<p>在使用层面 (或者说应用逻辑) 上，这类错误一般用 <code class="highlighter-rouge">if let</code> 的可选值绑定或者是 <code class="highlighter-rouge">guard let</code> 提前进行返回处理即可，不需要再在语言层面上进行额外处理。</p>
+
+<h3 id="recoverable-error">Recoverable error</h3>
+<p>正如其名，这类错误应该是被容许，并且是可以恢复的。可恢复错误的发生是正常的程序路径之一，而作为开发者，我们应当去检出这类错误发生的情况，并进一步对它们进行处理，让它们恢复到我们期望的程序路径上。</p>
+
+<p>这类错误在 Objective-C 的时代通常用 <code class="highlighter-rouge">NSError</code> 类型来表示，而在 Swift 里则是 <code class="highlighter-rouge">throw</code> 和 <code class="highlighter-rouge">Error</code> 的组合。一般我们需要检查错误的类型，并作出合理的响应。而选择忽视这类错误往往是不明智的，因为它们是用户正常使用过程中可能会出现的情况，我们应该尝试对其恢复，或者至少向用户给出合理的提示，让他们知道发生了什么。像是网络请求超时，或者写入文件时磁盘空间不足：</p>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="c1">// 网络请求</span>
+<span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://www.example.com/"</span><span class="p">)</span><span class="o">!</span>
+<span class="k">let</span> <span class="nv">task</span> <span class="o">=</span> <span class="kt">URLSession</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="nf">dataTask</span><span class="p">(</span><span class="nv">with</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span> <span class="p">{</span> <span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="o">=</span> <span class="n">error</span> <span class="p">{</span>
+        <span class="c1">// 提示用户</span>
+        <span class="k">self</span><span class="o">.</span><span class="nf">showErrorAlert</span><span class="p">(</span><span class="s">"Error: </span><span class="se">\(</span><span class="n">error</span><span class="o">.</span><span class="n">localizedDescription</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">!</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// 写入文件</span>
+<span class="kd">func</span> <span class="nf">write</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">,</span> <span class="n">to</span> <span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="k">try</span> <span class="n">data</span><span class="o">.</span><span class="nf">write</span><span class="p">(</span><span class="nv">to</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="k">let</span> <span class="nv">error</span> <span class="k">as</span> <span class="kt">NSError</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="kt">NSFileWriteOutOfSpaceError</span> <span class="p">{</span>
+            <span class="c1">// 尝试通过释放空间自动恢复</span>
+            <span class="nf">removeUnusedFiles</span><span class="p">()</span>
+            <span class="nf">write</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="nv">to</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="c1">// 其他错误，提示用户</span>
+            <span class="nf">showErrorAlert</span><span class="p">(</span><span class="s">"Error: </span><span class="se">\(</span><span class="n">error</span><span class="o">.</span><span class="n">localizedDescription</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="nf">showErrorAlert</span><span class="p">(</span><span class="s">"Error: </span><span class="se">\(</span><span class="n">error</span><span class="o">.</span><span class="n">localizedDescription</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="universal-error">Universal error</h3>
+<p>这类错误理论上可以恢复，但是由于语言本身的特性所决定，我们难以得知这类错误的来源，所以一般来说也不会去处理这种错误。这类错误包括类似下面这些情形：</p>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="c1">// 内存不足</span>
+<span class="p">[</span><span class="kt">Int</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="o">.</span><span class="n">max</span><span class="p">)</span>
+
+<span class="c1">// 调用栈溢出</span>
+<span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">}</span>
+<span class="nf">foo</span><span class="p">()</span>
+</code></pre>
+</div>
+
+<p>我们可以通过设计一些手段来对这些错误进行处理，比如：检测当前的内存占用并在超过一定值后警告，或者监视栈 frame 数进行限制等。但是一般来说这是不必要的，也不可能涵盖全部的错误情况。更多情况下，这是由于代码触碰到了设备的物理限制和边界情况所造成的，一般我们也不去进行处理（除非是人为操成的 bug）。</p>
+
+<p>在 Swift 中，各种被使用 <code class="highlighter-rouge">fatalError</code> 进行强制终止的错误一般都可以归类到 Universal error。</p>
+
+<h3 id="logic-failure">Logic failure</h3>
+<p>逻辑错误是程序员的失误所造成的错误，它们应该在开发时通过代码进行修正并完全避免，而不是等到运行时再进行恢复和处理。</p>
+
+<p>常见的 Logic failure 包括有：</p>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="c1">// 强制解包一个 `nil` 可选值</span>
+<span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span>
+<span class="n">name</span><span class="o">!</span>
+
+<span class="c1">// 数组越界访问</span>
+<span class="k">let</span> <span class="nv">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="k">let</span> <span class="nv">num</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+<span class="c1">// 计算溢出</span>
+<span class="k">var</span> <span class="nv">a</span> <span class="o">=</span> <span class="kt">Int</span><span class="o">.</span><span class="n">max</span>
+<span class="n">a</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1">// 强制 try 但是出现错误</span>
+<span class="k">try!</span> <span class="kt">JSONDecoder</span><span class="p">()</span><span class="o">.</span><span class="nf">decode</span><span class="p">(</span><span class="kt">Foo</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="kt">Data</span><span class="p">())</span>
+</code></pre>
+</div>
+
+<p>这类错误在实现中触发的一般是 <a href="https://github.com/apple/swift/blob/a05cd35a7f8e3cc70e0666bc34b5056a543eafd4/stdlib/public/core/Collection.swift#L1009-L1046"><code class="highlighter-rouge">assert</code> 或者 <code class="highlighter-rouge">precondition</code></a>。</p>
+
+<h4 id="断言的作用范围和错误转换">断言的作用范围和错误转换</h4>
+<p>和 <code class="highlighter-rouge">fatalError</code> 不同，<code class="highlighter-rouge">assert</code> 只在进行编译优化的 <code class="highlighter-rouge">-O</code> 配置下是不触发的，而如果更进一步，将编译优化选项配置为 <code class="highlighter-rouge">-Ounchecked</code> 的话，<code class="highlighter-rouge">precondition</code> 也将不触发。此时，各方法中的 <code class="highlighter-rouge">precondition</code> 将被跳过，因此我们可以得到最快的运行速度。但是相对地代码的安全性也将降低，因为对于越界访问或者计算溢出等错误，我们得到的将是不确定的行为。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>faltaError</th>
+      <th>precondition</th>
+      <th>assert</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-Onone</td>
+      <td>触发</td>
+      <td>触发</td>
+      <td>触发</td>
+    </tr>
+    <tr>
+      <td>-O</td>
+      <td>触发</td>
+      <td>触发</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>-Ounchecked</td>
+      <td>触发</td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>对于 Universal error 一般使用 <code class="highlighter-rouge">fatalError</code>，而对于 Logic failure 一般使用 <code class="highlighter-rouge">assert</code> 或者 <code class="highlighter-rouge">precondition</code>。遵守这个规则会有助于我们在编码时对错误进行界定。而有时候我们也希望能尽可能多地在开发的时候捕获 Logic failure，而在产品发布后尽量减少 crash 比例。这种情况下，相比于直接将 Logic failure 转换为可恢复的错误，我们最好是使用 <code class="highlighter-rouge">assert</code> 在内部进行检查，来让程序在开发时崩溃。</p>
+
+<h2 id="quiz">Quiz</h2>
+<p>光说不练假把式。让我们来实际判断一下下面这些情况下我们都应该选择用哪种错误处理方式吧~</p>
+
+<h3 id="1-app-内资源加载">#1 app 内资源加载</h3>
+<p>请听题。</p>
+
+<p>假设我们在处理一个机器学习的模型，需要从磁盘读取一份预先训练好的模型。该模型以文件的方式存储在 app bundle 中，如果读取时没有找到该模型，我们应该如何处理这个错误？</p>
+
+<h4 id="方案-1-simple-domain-error">方案 1 Simple domain error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadModel</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Model</span><span class="p">?</span> <span class="p">{</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">path</span> <span class="o">=</span> <span class="kt">Bundle</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="nf">path</span><span class="p">(</span><span class="nv">forResource</span><span class="p">:</span> <span class="s">"my_pre_trained_model"</span><span class="p">,</span> <span class="nv">ofType</span><span class="p">:</span> <span class="s">"mdl"</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentOf</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="k">try</span><span class="p">?</span> <span class="kt">ModelLoader</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-2-recoverable-error">方案 2 Recoverable error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadModel</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Model</span> <span class="p">{</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">path</span> <span class="o">=</span> <span class="kt">Bundle</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="nf">path</span><span class="p">(</span><span class="nv">forResource</span><span class="p">:</span> <span class="s">"my_pre_trained_model"</span><span class="p">,</span> <span class="nv">ofType</span><span class="p">:</span> <span class="s">"mdl"</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="kt">AppError</span><span class="o">.</span><span class="kt">FileNotExisting</span>
+    <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentOf</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">try</span> <span class="kt">ModelLoader</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-3-universal-error">方案 3 Universal error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadModel</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Model</span> <span class="p">{</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">path</span> <span class="o">=</span> <span class="kt">Bundle</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="nf">path</span><span class="p">(</span><span class="nv">forResource</span><span class="p">:</span> <span class="s">"my_pre_trained_model"</span><span class="p">,</span> <span class="nv">ofType</span><span class="p">:</span> <span class="s">"mdl"</span><span class="p">)</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">fatalError</span><span class="p">(</span><span class="s">"Model file not existing"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentOf</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">try</span> <span class="kt">ModelLoader</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+        <span class="nf">fatalError</span><span class="p">(</span><span class="s">"Model corrupted."</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-4-logic-failure">方案 4 Logic failure</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadModel</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Model</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">path</span> <span class="o">=</span> <span class="kt">Bundle</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="nf">path</span><span class="p">(</span><span class="nv">forResource</span><span class="p">:</span> <span class="s">"my_pre_trained_model"</span><span class="p">,</span> <span class="nv">ofType</span><span class="p">:</span> <span class="s">"mdl"</span><span class="p">)</span><span class="o">!</span>
+    <span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">fileURLWithPath</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try!</span> <span class="kt">Data</span><span class="p">(</span><span class="nv">contentOf</span><span class="p">:</span> <span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">try!</span> <span class="kt">ModelLoader</span><span class="o">.</span><span class="nf">load</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="2-加载当前用户信息时发生错误">#2 加载当前用户信息时发生错误</h3>
+<p>我们在用户登录后会将用户信息存储在本地，每次重新打开 app 时我们检测并使用用户信息。当用户信息不存在时，应该进行的处理：</p>
+
+<h4 id="方案-1-simple-domain-error-1">方案 1 Simple domain error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadUser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">User</span><span class="p">?</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">username</span> <span class="o">=</span> <span class="kt">UserDefaults</span><span class="o">.</span><span class="n">standard</span><span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="s">"com.onevcat.app.defaults.username"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">username</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">User</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="n">username</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-2-recoverable-error-1">方案 2 Recoverable error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadUser</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">User</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">username</span> <span class="o">=</span> <span class="kt">UserDefaults</span><span class="o">.</span><span class="n">standard</span><span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="s">"com.onevcat.app.defaults.username"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">username</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">User</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="n">username</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">throws</span> <span class="kt">AppError</span><span class="o">.</span><span class="kt">UsernameNotExisting</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-3-universal-error-1">方案 3 Universal error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadUser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">User</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">username</span> <span class="o">=</span> <span class="kt">UserDefaults</span><span class="o">.</span><span class="n">standard</span><span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="s">"com.onevcat.app.defaults.username"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="k">let</span> <span class="nv">username</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kt">User</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="n">username</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">fatalError</span><span class="p">(</span><span class="s">"User name not existing"</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-4-logic-failure-1">方案 4 Logic failure</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadUser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">User</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">username</span> <span class="o">=</span> <span class="kt">UserDefaults</span><span class="o">.</span><span class="n">standard</span><span class="o">.</span><span class="nf">string</span><span class="p">(</span><span class="nv">forKey</span><span class="p">:</span> <span class="s">"com.onevcat.app.defaults.username"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kt">User</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="n">username</span><span class="o">!</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="3-还没有实现的代码">#3 还没有实现的代码</h3>
+<p>假设你在为你的服务开发一个 iOS 框架，但是由于工期有限，有一些功能只定义了接口，没有进行具体实现。这些接口会在正式版中完成，但是我们需要预先发布给友商内测。所以除了在文档中明确标明这些内容，这些方法内部应该如何处理呢？</p>
+
+<h4 id="方案-1-simple-domain-error-2">方案 1 Simple domain error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bar</span><span class="p">?</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-2-recoverable-error-2">方案 2 Recoverable error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bar</span><span class="p">?</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="kt">FrameworkError</span><span class="o">.</span><span class="kt">NotImplemented</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-3-universal-error-2">方案 3 Universal error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bar</span><span class="p">?</span> <span class="p">{</span>
+    <span class="nf">fatalError</span><span class="p">(</span><span class="s">"Not implemented yet."</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-4-logic-failure-2">方案 4 Logic failure</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bar</span><span class="p">?</span> <span class="p">{</span>
+    <span class="nf">assertionFailure</span><span class="p">(</span><span class="s">"Not implemented yet."</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="4-调用设备上的传感器收集数据">#4 调用设备上的传感器收集数据</h3>
+<p>调用传感器的 app 最有意思了！不管是相机还是陀螺仪，传感器相关的 app 总是能带给我们很多乐趣。那么，如果想要调用传感器获取数据时，发生了错误，应该怎么办呢？</p>
+
+<h4 id="方案-1-simple-domain-error-3">方案 1 Simple domain error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">getDataFromSensor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Data</span><span class="p">?</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">sensorState</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getState</span><span class="p">()</span>
+    <span class="k">guard</span> <span class="n">sensorState</span> <span class="o">==</span> <span class="o">.</span><span class="n">normal</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">try</span><span class="p">?</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getData</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-2-recoverable-error-3">方案 2 Recoverable error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">getDataFromSensor</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Data</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">sensorState</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getState</span><span class="p">()</span>
+    <span class="k">guard</span> <span class="n">sensorState</span> <span class="o">==</span> <span class="o">.</span><span class="n">normal</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">throws</span> <span class="kt">SensorError</span><span class="o">.</span><span class="n">stateError</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="k">try</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getData</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-3-universal-error-3">方案 3 Universal error</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadUser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Data</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">sensorState</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getState</span><span class="p">()</span>
+    <span class="k">guard</span> <span class="n">sensorState</span> <span class="o">==</span> <span class="o">.</span><span class="n">normal</span><span class="p">,</span> <span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="k">try</span><span class="p">?</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getData</span><span class="p">()</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nf">fatalError</span><span class="p">(</span><span class="s">"Sensor get data failed!"</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">data</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h4 id="方案-4-logic-failure-3">方案 4 Logic failure</h4>
+
+<div class="language-swift highlighter-rouge"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loadUser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Data</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">sensorState</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getState</span><span class="p">()</span>
+    <span class="nf">assert</span><span class="p">(</span><span class="n">sensorState</span> <span class="o">==</span> <span class="o">.</span><span class="n">normal</span><span class="p">,</span> <span class="s">"The sensor state is not normal"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">try!</span> <span class="n">sensor</span><span class="o">.</span><span class="nf">getData</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="quiz-的一些总结">Quiz 的一些总结</h3>
+<p>可以看到，其实在错误处理的时候，选用哪种错误是根据情景和处理需求而定的，我在参考答案也使用了很多诸如“可能”，“相较而言”等语句。虽然对于特定的场景，我们可以进行直观的考虑和决策，但这并不是教条主义般的一成不变。错误类型之间可以很容易地通过代码互相转换，这让我们在处理错误的时候可以自由选择使用的策略：比如 API 即使提供给我们的是 Recoverable 的 throws 形式，我们也还是可以按照需要，通过 <code class="highlighter-rouge">try ?</code> 将其转为 Simple domain error，或者用 <code class="highlighter-rouge">try !</code> 将其转为 Logic failure。</p>
+
+<p>能切实理解使用情景，利用这些错误类型转换的方式，灵活选取使用场景下最合适的错误类型，才能说是真正理解了这四种错误的分类依据。</p>
+
+<h2 id="参考链接">参考链接</h2>
+
+<ul>
+  <li><a href="https://github.com/apple/swift/blob/master/docs/ErrorHandling.rst">Error Handling in Swift 2.0</a></li>
+  <li><a href="https://qiita.com/koher/items/a7a12e7e18d2bb7d8c77">Swiftのエラー4分類が素晴らしすぎるのでみんなに知ってほしい</a></li>
+</ul>
