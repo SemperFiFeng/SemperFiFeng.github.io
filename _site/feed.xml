@@ -2,22 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>☁️ོSemper fi</title>
-    <description>嗨，我是封硕 (@Dejavu_Memory)，一名来自中国的区块链研习者。现居中国，在孔壹学院修行，探求区块链新世界的可能性。</description>
+    <description>嗨，我是封硕 (@Dejavu_Memory)，一名来自中国的区块链研习者,探求区块链新世界的可能性。</description>
     <link>http://SemperFiFeng.github.io/</link>
     <atom:link href="http://SemperFiFeng.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 31 Jan 2018 17:41:19 +0800</pubDate>
-    <lastBuildDate>Wed, 31 Jan 2018 17:41:19 +0800</lastBuildDate>
+    <pubDate>Wed, 02 May 2018 00:25:19 +0800</pubDate>
+    <lastBuildDate>Wed, 02 May 2018 00:25:19 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
     
       <item>
-        <title>Golang Channe</title>
-        <description>&lt;hr /&gt;
-&lt;p&gt;layout: post
-title: “Golang 中管道的使用”
-date: 2018-01-30 23:32:54.000000000 +09:00
-tags: 技术篇&lt;/p&gt;
-&lt;hr /&gt;
-&lt;p&gt;#区块链/区块链博客&lt;/p&gt;
+        <title>Golang 中管道的使用</title>
+        <description>&lt;p&gt;#区块链/区块链博客&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;管道是什么？
@@ -71,7 +65,7 @@ tags: 技术篇&lt;/p&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
     &lt;p&gt;两个线程会交替完成读写的操作，此时实际上是两个子线程间的数据通信。&lt;/p&gt;
-    &lt;pre&gt;&lt;code class=&quot;language-终端执行结果&quot;&gt;localhost:0130 Fong$ go run 009_demo.go 
+    &lt;pre&gt;&lt;code class=&quot;language-终端执行结果&quot;&gt;localhost:0130 Fong$ go run 009_demo.go
 0
 读取数据
 写入数据
@@ -102,7 +96,7 @@ tags: 技术篇&lt;/p&gt;
 写入数据
 9
 读取数据
-localhost:0130 Fong$ 
+localhost:0130 Fong$
 &lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;close&lt;/code&gt;与&lt;code class=&quot;highlighter-rouge&quot;&gt;range&lt;/code&gt;结合实现类似队列的功能，例如 实现在主线程结束之前完成其它子线程的功能。如下代码
@@ -120,7 +114,7 @@ localhost:0130 Fong$
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
     &lt;/div&gt;
     &lt;p&gt;输出的结果：&lt;/p&gt;
-    &lt;pre&gt;&lt;code class=&quot;language-运行终端输出&quot;&gt;localhost:0130 Fong$ go run 011-demo.go 
+    &lt;pre&gt;&lt;code class=&quot;language-运行终端输出&quot;&gt;localhost:0130 Fong$ go run 011-demo.go
 0
 1
 2
@@ -131,7 +125,7 @@ localhost:0130 Fong$
 7
 8
 9
-localhost:0130 Fong$ 
+localhost:0130 Fong$
 &lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
@@ -198,9 +192,11 @@ localhost:0130 Fong$
   &lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Wed, 31 Jan 2018 00:00:00 +0800</pubDate>
-        <link>http://SemperFiFeng.github.io/2018/01/golang-channe/</link>
-        <guid isPermaLink="true">http://SemperFiFeng.github.io/2018/01/golang-channe/</guid>
+        <pubDate>Tue, 30 Jan 2018 22:32:54 +0800</pubDate>
+        <link>http://SemperFiFeng.github.io/2018/01/golang-channel/</link>
+        <guid isPermaLink="true">http://SemperFiFeng.github.io/2018/01/golang-channel/</guid>
+        
+        <category>技术篇</category>
         
         
       </item>

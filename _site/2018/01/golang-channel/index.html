@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>Golang 中管道的使用</title>
+  <meta name="description" content="#区块链/区块链博客">
+  <meta name="author" content="Wei Wang">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Golang 中管道的使用">
+  <meta name="twitter:description" content="#区块链/区块链博客">
+  
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Golang 中管道的使用">
+  <meta property="og:description" content="#区块链/区块链博客">
+  
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
+  <link href="/assets/images/favicon.png" rel="shortcut icon" type="image/png">
+  
+  <link rel="stylesheet" href="/css/main.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://SemperFiFeng.github.io/2018/01/golang-channel/">
+  <link rel="alternate" type="application/rss+xml" title="☁️ོSemper fi" href="http://SemperFiFeng.github.io/feed.xml">
+  
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+  
+</head>
+
+
+  <body>
+
+    <span class="mobile btn-mobile-menu">
+        <i class="fa fa-list btn-mobile-menu__icon"></i>
+        <i class="fa fa-angle-up btn-mobile-close__icon hidden"></i>
+    </span>
+    
+    <header class="panel-cover panel-cover--collapsed" style="background-image: url('/assets/images/background-cover.jpg')">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+
+        <a href="/#blog" title="前往 ☁️ོSemper fi 的主页" class="blog-button"><img src="/assets/images/avatar.jpg" width="80" alt="☁️ོSemper fi logo" class="panel-cover__logo logo" /></a>
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for ☁️ོSemper fi" class="blog-button">☁️ོSemper fi</a></h1>
+
+        
+        <span class="panel-cover__subtitle panel-subtitle">find the re</span>
+        
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">嗨，我是封硕 (@Dejavu_Memory)，一名来自中国的区块链研习者,探求区块链新世界的可能性。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" />
+        
+        
+        <p class="panel-cover__description"><a href="" target="_blank"></a></p>
+        
+        
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="访问博客" class="blog-button">博客</a></li>
+                
+                  <li class="navigation__item"><a href="https:baidu.com" target="_blank" title="我的简历">简历</a></li>
+                
+                  <li class="navigation__item"><a href="http://baidu.com/" target="_blank" title="了解更多关于我">关于</a></li>
+                
+                  <li class="navigation__item"><a href="//baidu.com" target="_blank" title="邮件订阅本站">订阅</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+          
+          <div><nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+
+  
+  <!-- Weibo -->
+  <li class="navigation__item">
+    <a href="http://weibo.com/Semper fi" title="@Semper fi 的微博" target="_blank">
+      <i class='social fa fa-weibo'></i>
+      <span class="label">Weibo</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Github -->
+  <li class="navigation__item">
+    <a href="https://github.com/Semper fi" title="@Semper fi 的 Github" target="_blank">
+      <i class='social fa fa-github'></i>
+      <span class="label">Github</span>
+    </a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li class="navigation__item">
+    <a href="http://twitter.com/Semper fi" title="@Semper fi" target="_blank">
+      <i class='social fa fa-twitter'></i>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  
+
+  
+  <!-- Google Plus -->
+  <li class="navigation__item">
+    <a href="https://plus.google.com/107" rel="author" title="Google+" target="_blank">
+      <i class='social fa fa-google-plus-square'></i>
+      <span class="label">Google Plus</span>
+    </a>
+  </li>
+  
+
+  <!-- RSS -->
+  <li class="navigation__item">
+    <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+      <i class='social fa fa-rss'></i>
+      <span class="label">RSS</span>
+    </a>
+  </li>
+
+  
+  <!-- Email -->
+  <li class="navigation__item">
+    <a href="mailto:fengshuo.dr@gmail.com" title="Contact me">
+      <i class='social fa fa-envelope'></i>
+      <span class="label">Email</span>
+    </a>
+  </li>
+  
+
+  </ul>
+</nav>
+</div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="panel-cover--overlay cover-clear"></div>
+    
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+        <div class="content-wrapper__inner">
+            <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2018-01-30 22:32:54 +0800" itemprop="datePublished" class="post-meta__date date">2018-01-30</time> &#8226; <span class="post-meta__tags tags">技术篇</span>
+    </div>
+    <h1 class="post-title">Golang 中管道的使用</h1>
+  </header>
+
+  <section class="post">
+    <p>#区块链/区块链博客</p>
+
+<ul>
+  <li>管道是什么？
+管道(<code class="highlighter-rouge">channel</code>)是Go语言在语言级别上提供的<strong>线程间</strong>的<strong>通讯方式</strong>，我们可以使用channel在多个线程之间传递消息。<code class="highlighter-rouge">channel</code>是<strong>进程内</strong>的通讯方式，是不支持跨进程通信的，如果需要进程间通讯的话，可以使用<code class="highlighter-rouge">Socket</code>等网络方式。</li>
+  <li>管道的创建方式
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="m">5</span><span class="p">)</span><span class="x"> </span><span class="c">//缓冲管道 可以放入多个数据  </span><span class="x">
+</span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> 	  </span><span class="c">//非缓冲管道 放入一个数未读取 再放入阻塞</span><span class="x">
+</span></code></pre>
+    </div>
+    <p>其中<code class="highlighter-rouge">make</code>为生成语句，<code class="highlighter-rouge">chan</code>为管道类型关键字（<code class="highlighter-rouge">channel</code>的前四个字母），<code class="highlighter-rouge">chan</code>后的<code class="highlighter-rouge">int</code>是在制定管道中存放数据的类型。
+在缓冲管道声明中<code class="highlighter-rouge">,</code>后面的参数为<code class="highlighter-rouge">capacity</code>指定的是管道的数据容量。这个参数可以通过下行代码来查看数值</p>
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="nb">cap</span><span class="p">(</span><span class="n">c</span><span class="p">))</span><span class="x">
+</span></code></pre>
+    </div>
+    <p>而实际管道中放入的数值个数可以通过以下代码来查看</p>
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">))</span><span class="x">
+</span></code></pre>
+    </div>
+  </li>
+  <li>向管道中写入数据
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="n">c</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="m">10</span><span class="x">  </span><span class="c">//注意数据类型的匹配，与声明中保持一致</span><span class="x">
+</span></code></pre>
+    </div>
+  </li>
+  <li>取出管道中写入的数据
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="o">&lt;-</span><span class="n">c</span><span class="x">  		</span><span class="c">//取数据</span><span class="x">
+</span><span class="n">a</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="o">&lt;-</span><span class="n">c</span><span class="x"> </span><span class="c">//将管道里面取出来的值赋给a</span><span class="x">
+</span></code></pre>
+    </div>
+  </li>
+  <li>管道数据读取与写入的阻塞。
+管道需要读取写入操作依次进行，否则会产生阻塞。例如一个非缓冲管道，从未写入的管道中读取数据会阻塞，直到真正向其中写入数据才可以读取。向已经写入数据的管道中写入数据也会阻塞，等待一个读取操作完成后可以继续进行写入操作。如下代码块
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="x">  </span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x">
+  </span><span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="x">
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x"> </span><span class="c">//子线程</span><span class="x">
+      </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+          </span><span class="n">c</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="c">//写入数据</span><span class="x">
+          </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"写入数据"</span><span class="p">)</span><span class="x">
+      </span><span class="p">}</span><span class="x">
+      </span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+          </span><span class="n">a</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="o">&lt;-</span><span class="n">c</span><span class="x">
+          </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="x"> </span><span class="c">//读取数据</span><span class="x">
+          </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"读取数据"</span><span class="p">)</span><span class="x">
+      </span><span class="p">}</span><span class="x">
+      </span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+  </span><span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x">
+</span></code></pre>
+    </div>
+    <p>两个线程会交替完成读写的操作，此时实际上是两个子线程间的数据通信。</p>
+    <pre><code class="language-终端执行结果">localhost:0130 Fong$ go run 009_demo.go
+0
+读取数据
+写入数据
+写入数据
+1
+读取数据
+2
+读取数据
+写入数据
+写入数据
+3
+读取数据
+4
+读取数据
+写入数据
+写入数据
+5
+读取数据
+6
+读取数据
+写入数据
+写入数据
+7
+读取数据
+8
+读取数据
+写入数据
+写入数据
+9
+读取数据
+localhost:0130 Fong$
+</code></pre>
+  </li>
+  <li><code class="highlighter-rouge">close</code>与<code class="highlighter-rouge">range</code>结合实现类似队列的功能，例如 实现在主线程结束之前完成其它子线程的功能。如下代码
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="x">  </span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x">
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+          </span><span class="n">c</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="n">i</span><span class="x">
+      </span><span class="p">}</span><span class="x">
+      </span><span class="nb">close</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+  </span><span class="k">for</span><span class="x"> </span><span class="n">n</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">c</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="x">
+  </span><span class="p">}</span><span class="x">
+  </span><span class="c">// num, ok := &lt;-c   测试管道是否被关闭，如果ok返回的false则关闭</span><span class="x">
+</span></code></pre>
+    </div>
+    <p>输出的结果：</p>
+    <pre><code class="language-运行终端输出">localhost:0130 Fong$ go run 011-demo.go
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+localhost:0130 Fong$
+</code></pre>
+  </li>
+</ul>
+
+<p>在<code class="highlighter-rouge">range</code>遍历中，<code class="highlighter-rouge">n</code>能够不断的读取<code class="highlighter-rouge">c</code>里面的数据，直到<code class="highlighter-rouge">for</code>执行完毕，通过下一步的<code class="highlighter-rouge">close(c)</code>关闭管道。这个过程可以看到数据实际上是从<code class="highlighter-rouge">go</code>开启的子线程中到达了主线程的<code class="highlighter-rouge">range</code>处，这个便是主线程和子线程间数据的传递过程。</p>
+
+<ul>
+  <li>通过队列和管道的方式分别实现多个分线程对管道进行读取操作后并关闭管道
+如下代码在队列中加入两个子线程，在第三个子线程中等待结束队列，关闭管道。
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="x">  </span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x">
+  </span><span class="k">var</span><span class="x"> </span><span class="n">wg</span><span class="x"> </span><span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span><span class="x"> </span><span class="c">//队列</span><span class="x">
+  </span><span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="x">
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"111111111"</span><span class="p">)</span><span class="x">
+      </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+          </span><span class="n">c</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="n">i</span><span class="x">
+      </span><span class="p">}</span><span class="x">
+      </span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"22222222"</span><span class="p">)</span><span class="x">
+      </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">20</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+          </span><span class="n">c</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="n">i</span><span class="x">
+      </span><span class="p">}</span><span class="x">
+      </span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"33333333"</span><span class="p">)</span><span class="x">
+      </span><span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span><span class="x">
+      </span><span class="nb">close</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+
+  </span><span class="k">for</span><span class="x"> </span><span class="n">n</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">c</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="c">// &lt;-c  有返回值</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="x">
+  </span><span class="p">}</span><span class="x">
+</span></code></pre>
+    </div>
+    <p>如下代码，<code class="highlighter-rouge">&lt;-done</code>的执行时在等待前面任意一个子线程<code class="highlighter-rouge">for</code>执行完成后进行写入操作，继而可以读取。当<code class="highlighter-rouge">&lt;-done</code>两个语句都执行完毕后，两个子线程都执行完毕。</p>
+    <div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="x">  </span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x">
+  </span><span class="n">done</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="x"> </span><span class="kt">bool</span><span class="p">)</span><span class="x">
+
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+          </span><span class="n">c</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="n">i</span><span class="x">
+      </span><span class="p">}</span><span class="x">
+      </span><span class="n">done</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="no">true</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+  </span><span class="k">go</span><span class="x"> </span><span class="k">func</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">0</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="m">10</span><span class="p">;</span><span class="x"> </span><span class="n">i</span><span class="o">++</span><span class="x"> </span><span class="p">{</span><span class="x">
+          </span><span class="n">c</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="n">i</span><span class="x">
+      </span><span class="p">}</span><span class="x">
+      </span><span class="n">done</span><span class="x"> </span><span class="o">&lt;-</span><span class="x"> </span><span class="no">true</span><span class="x">
+  </span><span class="p">}()</span><span class="x">
+  </span><span class="o">&lt;-</span><span class="n">done</span><span class="x"> </span><span class="c">//死锁</span><span class="x">
+  </span><span class="o">&lt;-</span><span class="n">done</span><span class="x">
+  </span><span class="nb">close</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="x">
+  </span><span class="k">for</span><span class="x"> </span><span class="n">n</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">c</span><span class="x"> </span><span class="p">{</span><span class="x">
+      </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="x">
+  </span><span class="p">}</span><span class="x">
+</span></code></pre>
+    </div>
+  </li>
+</ul>
+
+  </section>
+</article>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- OneV's Den -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3324997515191619"
+     data-ad-slot="9170309685"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<section class="read-more">
+   
+   
+   
+</section>
+
+<section class="post-comments">
+  
+    <div id="disqus_thread"></div>
+    <script>
+    
+    var disqus_config = function () {
+        this.page.url = "http://SemperFiFeng.github.io/2018/01/golang-channel/";
+        this.page.identifier = "/2018/01/golang-channel/";
+    };
+
+    var disqus_shortname = 'Semper fi';
+    
+    (function() { // DON'T EDIT BELOW THIS LINE
+        var d = document, s = d.createElement('script');
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <noscript>要查看<a href="http://disqus.com/?ref_noscript"> Disqus </a>评论，请启用 JavaScript</noscript>
+    
+  
+  
+  
+  
+</section>
+
+
+            <section class="footer">
+    <footer>
+    	<span class="footer__copyright">本站点采用<a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享 署名-非商业性使用-相同方式共享 4.0 国际 许可协议</a></span>
+        <span class="footer__copyright">由 <a href="https://jekyllrb.com">Jekyll</a> 于 2018-05-02 生成，感谢 <a href="https://www.digitalocean.com/?refcode=30ed2d146762">Digital Ocean</a> 为本站提供稳定的 VPS 服务</span>
+        <span class="footer__copyright">本站由 <a href="SemperFiFeng"></a> 创建，采用 <a href="https://github.com/SemperFiFeng/SemperFiFeng.github.io">Vno - Jekyll</a> 作为主题，您可以在 GitHub 找到<a href="https://github.com/SemperFiFeng/SemperFiFeng.github.io">本站源码</a> - &copy; 2018</span>
+    </footer>
+</section>
+
+        </div>
+    </div>
+    
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+
+
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+    
+  </body>
+
+</html>
