@@ -1,6 +1,6 @@
 # Basic
 title: ☁️ོSemper fi
-subtitle: find the re
+subtitle: find the rendezvous
 welcome_message: <a href="" target="_blank"></a>
 description: 嗨，我是封硕 (@Dejavu_Memory)，一名来自中国的区块链研习者,探求区块链新世界的可能性。
 creator: <a href="SemperFiFeng"></a>
@@ -20,9 +20,9 @@ blog_button:
     description: 访问博客
 
 nav:
-    - {title: 简历, description: 我的简历, url: 'https:baidu.com'}
-    - {title: 关于, description: 了解更多关于我, url: 'http://baidu.com/'}
-    - {title: 订阅, description: 邮件订阅本站, url: '//baidu.com'}
+    - {title: 简历, description: 我的简历, url: ''}
+    - {title: 关于, description: 了解更多关于我, url: ''}
+    - {title: 订阅, description: 邮件订阅本站, url: 'fengsuo.dr@gmail.com'}
 
 # Pagination
 gems: [jekyll-paginate]
