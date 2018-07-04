@@ -1,0 +1,195 @@
+<p>#区块链/区块链博客</p>
+
+<h1 id="golang-基础语法"><code class="highlighter-rouge">golang</code> 基础语法</h1>
+
+<h2 id="变量的定义">变量的定义</h2>
+<p><code class="highlighter-rouge">var</code> 为定义变量关键字，与其它语言不同的是，如果想明确变量的类型则在变量的后方加上类型例如定义变量<code class="highlighter-rouge">var a int=1</code>，同时也有不用<code class="highlighter-rouge">var</code>关键字的简便方式<code class="highlighter-rouge">a:=1</code>,但是这种方式只能在函数内部来使用。在函数外部的公共区域定义必须使用<code class="highlighter-rouge">var</code>关键字，且在函数外部定义的变量的作用域只是在当前<code class="highlighter-rouge">package</code>有效，为包内部的全局变量。以下为代码块中为定义变量的一些使用方式：</p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="x">   	
+</span><span class="c">//未赋值 两个空值 输出的结果为 0 看不到b的值</span><span class="x">
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%d,%q"</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="x">
+</span><span class="c">//给字符串定义 q 类型的占位符输出  输出结果为 0,"" q为quotation 会给字符串空值套上引号</span><span class="x">
+</span></code></pre>
+</div>
+
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"semperfi"</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">e</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="x">             </span><span class="c">//编译器可推测变量的类型</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">f</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">4</span><span class="p">,</span><span class="no">true</span><span class="p">,</span><span class="s">"a"</span><span class="p">,</span><span class="s">"abc"</span><span class="x">
+</span><span class="n">f</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="m">4</span><span class="p">,</span><span class="no">true</span><span class="p">,</span><span class="s">"a"</span><span class="p">,</span><span class="s">"abc"</span><span class="x">
+</span><span class="k">var</span><span class="p">(</span><span class="x">
+	</span><span class="n">aa</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x">
+	</span><span class="n">bb</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">2</span><span class="x">
+	</span><span class="n">cc</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">3</span><span class="x">
+</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<h2 id="内建变量类型">内建变量类型</h2>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="kt">bool</span><span class="x">
+</span><span class="kt">string</span><span class="x">
+</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="kt">int</span><span class="x"> </span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="kt">int8</span><span class="x"> </span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="kt">int16</span><span class="x"> </span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="kt">int32</span><span class="x"> </span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="kt">int64</span><span class="x">
+</span><span class="kt">uintptr</span><span class="x">              </span><span class="c">//指针</span><span class="x">
+</span><span class="kt">byte</span><span class="x">
+</span><span class="kt">rune</span><span class="x">					</span><span class="c">//go的char类型</span><span class="x">
+</span><span class="kt">float32</span><span class="x"> </span><span class="kt">float64</span><span class="x">
+</span><span class="kt">complex64</span><span class="x"> </span><span class="kt">complex128</span><span class="x"> </span><span class="c">//复数类型</span><span class="x">
+</span></code></pre>
+</div>
+<p>强制类型转换方法 <code class="highlighter-rouge">类型(参数)</code></p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="k">var</span><span class="x"> </span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">c</span><span class="x"> </span><span class="kt">int</span><span class="x">
+	</span><span class="n">c</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="kt">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="kt">float64</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">b</span><span class="p">)))</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<h2 id="常量与枚举">常量与枚举</h2>
+<p>常量的定义，如果不规定类型数值可以作为各种类型使用，如以下<code class="highlighter-rouge">a,b</code>不需要进行强制转换。</p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="k">const</span><span class="x"> </span><span class="n">name</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"xiaozhang"</span><span class="x">
+</span><span class="k">const</span><span class="x"> </span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">c</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="kt">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">b</span><span class="p">))</span><span class="x">
+</span><span class="c">//定义多个</span><span class="x">
+</span><span class="k">const</span><span class="p">(</span><span class="x">
+	</span><span class="n">d1</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"a"</span><span class="x">
+	</span><span class="n">d2</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"aa"</span><span class="x">
+	</span><span class="n">d3</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="s">"aaa"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>枚举类型  一种特殊的常量</p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="k">const</span><span class="p">(</span><span class="x">
+	</span><span class="n">male</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">0</span><span class="x">
+	</span><span class="n">female</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x">
+	</span><span class="n">unsure</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">2</span><span class="x">
+</span><span class="p">)</span><span class="x">
+</span><span class="c">//	 自增值枚举</span><span class="x">
+</span><span class="k">const</span><span class="p">(</span><span class="x">
+	</span><span class="n">male</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">iota</span><span class="x"> </span><span class="c">//简易赋值  效果同上 顺序递增</span><span class="x">
+	</span><span class="n">_</span><span class="x">
+	</span><span class="n">female</span><span class="x">
+	</span><span class="n">unsure</span><span class="x">
+</span><span class="p">)</span><span class="x">
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">male</span><span class="p">,</span><span class="n">female</span><span class="p">,</span><span class="n">unsure</span><span class="p">)</span><span class="x">   </span><span class="c">//输出为 0 2 3 ”_“为占位，跳过</span><span class="x">
+</span></code></pre>
+</div>
+<p>条件自增至枚举类型。<code class="highlighter-rouge">1&lt;&lt;10</code> 左移10位，递增 即 二进制每次左移10位，相当于十进制*1024</p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="c">// 枚举表示 b,kb,mb,gb,tb,pb</span><span class="x">
+</span><span class="k">const</span><span class="p">(</span><span class="x">
+	</span><span class="n">b</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">1</span><span class="x"> </span><span class="o">&lt;&lt;</span><span class="x"> </span><span class="p">(</span><span class="m">10</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="no">iota</span><span class="p">)</span><span class="x">  
+	</span><span class="n">kb</span><span class="x">
+	</span><span class="n">mb</span><span class="x">
+	</span><span class="n">gb</span><span class="x">
+	</span><span class="n">tb</span><span class="x">
+	</span><span class="n">pb</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span></code></pre>
+</div>
+
+<h2 id="条件语句">条件语句</h2>
+<p><code class="highlighter-rouge">if else</code>条件不需要括号</p>
+
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="k">import</span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"io/ioutil"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+	</span><span class="k">const</span><span class="x">  </span><span class="n">fileName</span><span class="x">  </span><span class="o">=</span><span class="x"> </span><span class="s">"123.txt"</span><span class="x">
+
+	</span><span class="n">contents</span><span class="p">,</span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ioutil</span><span class="o">.</span><span class="n">ReadFile</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">contents</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+</span></code></pre>
+</div>
+<p>条件判断的变量定义赋值也可以放到<code class="highlighter-rouge">if</code>条件中去，如下：</p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="k">if</span><span class="x"> </span><span class="n">contents</span><span class="p">,</span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ioutil</span><span class="o">.</span><span class="n">ReadFile</span><span class="p">(</span><span class="n">fileName</span><span class="p">);</span><span class="n">err</span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="c">//fmt.println(err)</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">contents</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p><code class="highlighter-rouge">switch</code>
+执行进入到一个<code class="highlighter-rouge">case</code>之后就会跳出这个<code class="highlighter-rouge">switch</code>。与其它语言不通不需要加<code class="highlighter-rouge">break</code>来执行跳出。如果想要执行完一个<code class="highlighter-rouge">case</code>之后继续执行下一个<code class="highlighter-rouge">case</code>,则可以在此个<code class="highlighter-rouge">case</code>执行结束后加<code class="highlighter-rouge">fallthrough</code>语句。</p>
+
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">caculate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="n">option</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="kt">int</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">result</span><span class="x"> </span><span class="kt">int</span><span class="x">
+	</span><span class="k">switch</span><span class="x"> </span><span class="n">option</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">case</span><span class="x"> </span><span class="s">"+"</span><span class="o">:</span><span class="x">
+		</span><span class="n">result</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">b</span><span class="x">
+	</span><span class="k">case</span><span class="x"> </span><span class="s">"-"</span><span class="o">:</span><span class="x">
+		</span><span class="n">result</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">-</span><span class="x"> </span><span class="n">b</span><span class="x">
+	</span><span class="k">case</span><span class="x"> </span><span class="s">"*"</span><span class="o">:</span><span class="x">
+		</span><span class="n">result</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">b</span><span class="x">
+	</span><span class="k">case</span><span class="x"> </span><span class="s">"/"</span><span class="o">:</span><span class="x">
+		</span><span class="n">result</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">a</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="n">b</span><span class="x">
+	</span><span class="k">default</span><span class="o">:</span><span class="x">
+		</span><span class="nb">panic</span><span class="p">(</span><span class="s">"unsupport operator:"</span><span class="o">+</span><span class="n">option</span><span class="p">)</span><span class="x"> </span><span class="c">//对无法识别的操作报错</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">result</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+
+
+</span></code></pre>
+</div>
+
+<h2 id="循环">循环</h2>
+<p><code class="highlighter-rouge">for</code>的条件里不需要括号。<code class="highlighter-rouge">for</code>的条件里可以省略初始条件，结束条件，递增表达式。</p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="c">//整数转为二进制  省略初始条件</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">convertToBinary</span><span class="p">(</span><span class="n">number</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="p">{</span><span class="x">
+	</span><span class="n">result</span><span class="x">	</span><span class="o">:=</span><span class="x"> </span><span class="s">""</span><span class="x">
+	</span><span class="k">for</span><span class="x"> </span><span class="p">;</span><span class="n">number</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">;</span><span class="n">number</span><span class="x"> </span><span class="o">/=</span><span class="x"> </span><span class="m">2</span><span class="x">  </span><span class="p">{</span><span class="x">
+		</span><span class="n">lsb</span><span class="x">	</span><span class="o">:=</span><span class="x"> </span><span class="n">number</span><span class="x"> </span><span class="o">%</span><span class="x"> </span><span class="m">2</span><span class="x">
+		</span><span class="n">result</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">strconv</span><span class="o">.</span><span class="n">Itoa</span><span class="p">(</span><span class="n">lsb</span><span class="p">)</span><span class="x"> </span><span class="o">+</span><span class="x"> </span><span class="n">result</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">result</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="c">//按行打印文件内容 省略初始条件和递增表达式</span><span class="x">
+</span><span class="c">//相当于`while`循环 `go`没有`while`语句</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">printFile</span><span class="p">(</span><span class="n">filename</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="n">file</span><span class="p">,</span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="nb">panic</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">scanner</span><span class="o">:=</span><span class="x"> </span><span class="n">bufio</span><span class="o">.</span><span class="n">NewScanner</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="x">
+	</span><span class="k">for</span><span class="x"> </span><span class="n">scanner</span><span class="o">.</span><span class="n">Scan</span><span class="p">()</span><span class="x">  </span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">scanner</span><span class="o">.</span><span class="n">Text</span><span class="p">())</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="c">//死循环 `go`语言中很多实现用到了死循环 比如`goroutine`</span><span class="x">
+</span><span class="k">for</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"test"</span><span class="p">);</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span></code></pre>
+</div>
+
+<h2 id="函数">函数</h2>
+<p>关键字为<code class="highlighter-rouge">func</code>函数类型类型和函数参数定义一样，返回值类型定义在后面，多个返回值需要用括号，一般用作返回一个需要的值和处理过程中遇到的<code class="highlighter-rouge">error</code></p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">divide</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="x"> </span><span class="kt">int</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">)</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">a</span><span class="o">/</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="o">%</span><span class="n">b</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>函数返回值的接收</p>
+<div class="language-golang highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">divide</span><span class="p">(</span><span class="m">13</span><span class="p">,</span><span class="m">5</span><span class="p">)</span><span class="x">
+	</span><span class="n">c</span><span class="p">,</span><span class="n">_</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">divide</span><span class="p">(</span><span class="m">13</span><span class="p">,</span><span class="m">5</span><span class="p">)</span><span class="x"> </span><span class="n">当不需要第二个返回值的时候</span><span class="x">
+</span></code></pre>
+</div>
